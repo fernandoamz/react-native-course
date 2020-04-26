@@ -35,19 +35,37 @@ function HandleEvents() {
     const options = { quality: 0.5, base64: true };
     const data = await camera.takePictureAsync(options);
     
-    cameraRoll.push({
-      id: uuid(),
-      uri: data.uri,
-      selected: false
-    })
+    setCameraRoll([
+      ...cameraRoll,
+      {
+        id: uuid(),
+        uri: data.uri,
+        selected: false
+      }
+    ])
 
     setIsModalCameraRollVisible(!isModalCameraRollVisible);
   }
 
   handleSelectImage = (id) => {
-    const foundSelectedImage = cameraRoll.find(item => item.id === id)
-    foundSelectedImage.selected = true;
+    const updatedCamera = cameraRoll.map((item) => {
+      if (item.id === id) {
+        return(
+          {
+            ...item,
+            selected: true
+          }
+        )
+      } else {
+        return (
+          {
+            ...item
+          }
+        )
+      }
+    })
 
+    setCameraRoll(updatedCamera)
   }
 
   return(
