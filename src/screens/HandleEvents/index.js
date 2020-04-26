@@ -48,14 +48,23 @@ function HandleEvents() {
   }
 
   handleSelectImage = (id) => {
-    const updatedCamera = cameraRoll.map((item) => {
+    const updatedPhotosCameraRoll = cameraRoll.map((item) => {
       if (item.id === id) {
-        return(
-          {
-            ...item,
-            selected: true
-          }
-        )
+        if (item.selected === true) {
+          return(
+            {
+              ...item,
+              selected: false
+            }
+          )
+        } else {
+          return(
+            {
+              ...item,
+              selected: true
+            }
+          )
+        }
       } else {
         return (
           {
@@ -65,7 +74,15 @@ function HandleEvents() {
       }
     })
 
-    setCameraRoll(updatedCamera)
+    setCameraRoll(updatedPhotosCameraRoll)
+  }
+
+  handleDeletePhotos = () => {
+    const filteredCameraRoll = cameraRoll.filter(
+      photo => photo.selected !== true
+    )
+
+    setCameraRoll(filteredCameraRoll)
   }
 
   return(
@@ -170,13 +187,19 @@ function HandleEvents() {
               alignItems: 'center'
             }}
           >
-            <Text
-              style={{
-                color: 'white',
-                fontSize: 16,
-                fontWeight: 'bold',
-              }}
-            >Eliminar</Text>
+            <TouchableOpacity
+              onPress={() => handleDeletePhotos()}
+            >
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}
+              >
+                Eliminar
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View
