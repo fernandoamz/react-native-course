@@ -1,45 +1,36 @@
-import React, { useState } from 'react';
-import { 
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  Button,
-  Image
-} from 'react-native';
+import React, {useState} from 'react';
+import {Text, View, StyleSheet, TextInput, Button, Image} from 'react-native';
 
-function Login() {
+function Login({navigation}) {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
 
   function logIn() {
-    console.log("Logica para iniciar sesion")
-    console.log(user)
-    console.log(password)
+    console.log('Logica para iniciar sesion');
+    console.log(user);
+    console.log(password);
+    navigation.navigate('Home');
   }
 
   return (
     <>
-      <View
-        style={styles.container}
-      >
+      <View style={styles.container}>
         <Image
-          source={require('./src/assets/images/logo.png')}
+          source={require('../assets/images/logo.png')}
           style={{
             width: 150,
-            height: 150
+            height: 150,
           }}
         />
         <Text
           style={styles.textStyles}
           numberOfLines={2}
-          ellipsizeMode={"tail"}
-        >
+          ellipsizeMode={'tail'}>
           Bienvenido a mi app
         </Text>
         <TextInput
           style={styles.inputStyles}
-          onChangeText={(userText) => setUser(userText)}
+          onChangeText={userText => setUser(userText)}
           placeholder="Usuario"
         />
         <TextInput
@@ -47,20 +38,15 @@ function Login() {
           autoCompleteType={'password'}
           secureTextEntry
           placeholder="Password"
-          onChangeText={(passwordText) => setPassword(passwordText)}
+          onChangeText={passwordText => setPassword(passwordText)}
         />
-        <View
-          style={styles.buttonStyles}
-        >
-          <Button
-            onPress={() => logIn()}
-            title="Iniciar sesion"
-          />
+        <View style={styles.buttonStyles}>
+          <Button onPress={() => logIn()} title="Iniciar sesion" />
         </View>
       </View>
     </>
   );
-};
+}
 
 export default Login;
 
@@ -82,14 +68,14 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     borderRadius: 10,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   textStyles: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   buttonStyles: {
-    width: 300
-  }
+    width: 300,
+  },
 });
