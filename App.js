@@ -1,95 +1,25 @@
-import React, { useState } from 'react';
-import { 
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  Button,
-  Image
-} from 'react-native';
+import 'react-native-gesture-handler';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import Login from './src/screens/Login';
+import Home from './src/screens/Home';
 
-function App() {
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
+const Stack = createStackNavigator();
 
-  function logIn() {
-    console.log("Logica para iniciar sesion")
-    console.log(user)
-    console.log(password)
-  }
-
+export default function App() {
   return (
-    <>
-      <View
-        style={styles.container}
-      >
-        <Image
-          source={require('./src/assets/images/logo.png')}
-          style={{
-            width: 150,
-            height: 150
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen 
+          component={Login}
+          name="Login"
+          options={{
+            headerShown: false,
           }}
         />
-        <Text
-          style={styles.textStyles}
-          numberOfLines={2}
-          ellipsizeMode={"tail"}
-        >
-          Bienvenido a mi app
-        </Text>
-        <TextInput
-          style={styles.inputStyles}
-          onChangeText={(userText) => setUser(userText)}
-          placeholder="Usuario"
-        />
-        <TextInput
-          style={styles.inputStyles}
-          autoCompleteType={'password'}
-          secureTextEntry
-          placeholder="Password"
-          onChangeText={(passwordText) => setPassword(passwordText)}
-        />
-        <View
-          style={styles.buttonStyles}
-        >
-          <Button
-            onPress={() => logIn()}
-            title="Iniciar sesion"
-          />
-        </View>
-      </View>
-    </>
+        <Stack.Screen component={Home} name="Home" />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
-
-export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-    alignItems: 'center',
-    color: 'black',
-    width: '100%',
-    backgroundColor: '#1a237e',
-  },
-  inputStyles: {
-    borderColor: '#3949ab',
-    borderWidth: 4,
-    width: 300,
-    padding: 10,
-    margin: 10,
-    borderRadius: 10,
-    backgroundColor: 'white'
-  },
-  textStyles: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  buttonStyles: {
-    width: 300
-  }
-});
+}
