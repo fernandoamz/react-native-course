@@ -6,7 +6,7 @@ function Login({navigation}) {
   const [password, setPassword] = useState('');
 
   function logIn() {
-    navigation.navigate('Home');
+    navigation.navigate('Counter');
   }
 
   return (
