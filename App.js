@@ -20,6 +20,7 @@ import TopicStyle from './src/screens/TopicStyle';
 import Users from './src/screens/Users';
 import UserList from './src/screens/Users/UserList';
 import CreateUser from './src/screens/Users/CreateUser';
+import SignOut from './src/components/SignOut';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,11 +32,7 @@ function LogoHeader() {
   return <MaterialCommunityIcons name="home" color="#ffff" size={30} />;
 }
 
-signOut = () => {
-  console.log('error');
-};
-
-export default function App(props) {
+export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -48,11 +45,7 @@ export default function App(props) {
             fontWeight: 'bold',
           },
           headerTitle: props => <LogoHeader {...props} />,
-          headerRight: () => (
-            <View style={{margin: 20}}>
-              <Button onPress={() => signOut()} title="Close" color="#000" />
-            </View>
-          ),
+          headerRight: () => <SignOut />,
         }}>
         <Stack.Screen
           component={Login}

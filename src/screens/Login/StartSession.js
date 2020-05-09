@@ -1,28 +1,53 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, TextInput, Button, Image} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Button,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 function StartSession({navigation}) {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+  const [errorSession, setErrorSession] = useState(false);
+  const [errorApp, setErrorApp] = useState(false);
 
   function logIn() {
-    axios
-      .post('https://reqres.in/api/login', {
-        email: user,
-        password: password,
-      })
-      .then(response => {
-        const {token} = response.data;
+    if (user !== '' && password !== '') {
+      axios
+        .post('https://reqres.in/api/login', {
+          email: user,
+          password: password,
+        })
+        .then(response => {
+          const {token} = response.data;
 
-        if (token) {
-          storeData(token);
-          navigation.navigate('MainMenu');
-        } else {
-          console.log('error');
-        }
-      });
+          if (token) {
+            storeData(token);
+            setUser('');
+            setPassword('');
+            navigation.navigate('MainMenu');
+          } else {
+            setErrorApp(true);
+            console.log('error');
+          }
+        })
+        .catch(error => {
+          setErrorApp(true);
+          return error;
+        });
+    } else {
+      setErrorSession(true);
+
+      setTimeout(() => {
+        setErrorSession(false);
+      }, 5000);
+    }
   }
 
   storeData = async token => {
@@ -52,18 +77,39 @@ function StartSession({navigation}) {
         <TextInput
           style={styles.inputStyles}
           onChangeText={userText => setUser(userText)}
+          value={user}
           placeholder="Usuario"
         />
         <TextInput
           style={styles.inputStyles}
           autoCompleteType={'password'}
           secureTextEntry
+          value={password}
           placeholder="Password"
           onChangeText={passwordText => setPassword(passwordText)}
         />
         <View style={styles.buttonStyles}>
           <Button onPress={() => logIn()} title="Iniciar sesion" />
         </View>
+        {errorSession ? (
+          <TouchableOpacity
+            style={styles.errorSession}
+            onPress={() => setErrorSession(false)}>
+            <View style={styles.subContainerErrorSession}>
+              <Text>Llenar usuario y contraseña</Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
+
+        {errorApp ? (
+          <TouchableOpacity
+            style={styles.errorApp}
+            onPress={() => setErrorApp(false)}>
+            <View style={styles.subContainerErrorSession}>
+              <Text>Ha ocurrido un error</Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </>
   );
@@ -98,5 +144,24 @@ const styles = StyleSheet.create({
   },
   buttonStyles: {
     width: 300,
+  },
+  errorSession: {
+    margin: 20,
+    backgroundColor: 'yellow',
+    width: 250,
+    height: 50,
+    borderRadius: 10,
+  },
+  errorApp: {
+    margin: 20,
+    backgroundColor: 'red',
+    width: 250,
+    height: 50,
+    borderRadius: 10,
+  },
+  subContainerErrorSession: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
