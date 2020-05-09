@@ -1,78 +1,50 @@
-import React, {useState} from 'react';
-import {Text, View, StyleSheet, TextInput, Button, Image} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, Image} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
-function Login({navigation}) {
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
+function Index({ navigation }) {
+  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@stored_token');
+      if(value !== null) {
+        navigation.navigate('MainMenu');
+      } else {
+        navigation.navigate('StartSession');
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  function logIn() {
-    navigation.navigate('MainMenu');
-  }
+  useEffect(() => getData(), []);
 
   return (
-    <>
-      <View style={styles.container}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={{
-            width: 150,
-            height: 150,
-          }}
-        />
-        <Text
-          style={styles.textStyles}
-          numberOfLines={2}
-          ellipsizeMode={'tail'}>
-          Bienvenido a mi app
-        </Text>
-        <TextInput
-          style={styles.inputStyles}
-          onChangeText={userText => setUser(userText)}
-          placeholder="Usuario"
-        />
-        <TextInput
-          style={styles.inputStyles}
-          autoCompleteType={'password'}
-          secureTextEntry
-          placeholder="Password"
-          onChangeText={passwordText => setPassword(passwordText)}
-        />
-        <View style={styles.buttonStyles}>
-          <Button onPress={() => logIn()} title="Iniciar sesion" />
-        </View>
-      </View>
-    </>
+    <View style={styles.container}>
+      <Image
+        source={require('../../assets/images/logo.png')}
+        style={styles.imagen}
+      />
+      <Text style={styles.texto}>Cargando ...</Text>
+    </View>
   );
 }
-
-export default Login;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    alignSelf: 'center',
     alignItems: 'center',
-    color: 'black',
-    width: '100%',
-    backgroundColor: '#1a237e',
+    backgroundColor: 'navy',
   },
-  inputStyles: {
-    borderColor: '#3949ab',
-    borderWidth: 4,
-    width: 300,
-    padding: 10,
-    margin: 10,
-    borderRadius: 10,
-    backgroundColor: 'white',
+  imagen: {
+    width: 100,
+    height: 100,
   },
-  textStyles: {
+  texto: {
     color: 'white',
-    fontSize: 18,
     fontWeight: 'bold',
   },
-  buttonStyles: {
-    width: 300,
-  },
 });
+
+export default Index;

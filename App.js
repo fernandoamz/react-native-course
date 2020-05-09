@@ -11,12 +11,15 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Login from './src/screens/Login';
+import StartSession from './src/screens/Login/StartSession';
 import Home from './src/screens/Home';
 import Counter from './src/screens/Counter';
 import MainMenu from './src/screens/MainMenu';
 import HandleEvents from './src/screens/HandleEvents';
 import TopicStyle from './src/screens/TopicStyle';
 import Users from './src/screens/Users';
+import UserList from './src/screens/Users/UserList';
+import CreateUser from './src/screens/Users/CreateUser';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -28,13 +31,17 @@ function LogoHeader() {
   return <MaterialCommunityIcons name="home" color="#ffff" size={30} />;
 }
 
-export function MyStack() {
+signOut = () => {
+  console.log('error');
+};
+
+export default function App(props) {
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: 'navy',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
@@ -43,11 +50,7 @@ export function MyStack() {
           headerTitle: props => <LogoHeader {...props} />,
           headerRight: () => (
             <View style={{margin: 20}}>
-              <Button
-                onPress={() => Alert.alert('works')}
-                title="Info"
-                color="#000"
-              />
+              <Button onPress={() => signOut()} title="Close" color="#000" />
             </View>
           ),
         }}>
@@ -60,9 +63,25 @@ export function MyStack() {
         />
         <Stack.Screen component={Home} name="Home" />
         <Stack.Screen component={Counter} name="Counter" />
-        <Stack.Screen component={MainMenu} name="MainMenu" />
+        <Stack.Screen
+          component={MainMenu}
+          name="MainMenu"
+          options={{
+            headerLeft: null,
+          }}
+        />
         <Stack.Screen component={HandleEvents} name="HandleEvents" />
         <Stack.Screen component={TopicStyle} name="TopicStyle" />
+        <Stack.Screen component={Users} name="Users" />
+        <Stack.Screen component={UserList} name="UserList" />
+        <Stack.Screen component={CreateUser} name="CreateUser" />
+        <Stack.Screen
+          component={StartSession}
+          name="StartSession"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -186,7 +205,7 @@ export function MyMaterialTab() {
   );
 }
 
-export default function App() {
+export function MySimpleTopBar() {
   return (
     <NavigationContainer>
       <TopBar.Navigator

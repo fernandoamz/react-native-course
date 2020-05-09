@@ -5,6 +5,11 @@ function MainMenu({navigation}) {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button}>
+        <Text style={styles.text} onPress={() => navigation.navigate('Users')}>
+          Users
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button}>
         <Text
           style={styles.text}
           onPress={() => navigation.navigate('Counter')}>
@@ -14,8 +19,7 @@ function MainMenu({navigation}) {
       <TouchableOpacity style={styles.button}>
         <Text
           style={styles.text}
-          //onPress={() => navigation.navigate('HandleEvents')}
-        >
+          onPress={() => navigation.navigate('HandleEvents')}>
           HandleEvents
         </Text>
       </TouchableOpacity>

@@ -3,7 +3,7 @@ import {View, FlatList, TextInput, StyleSheet, Button} from 'react-native';
 import {connect} from 'react-redux';
 import {addTitle, deleteTitle} from '../../actions/titles';
 import Item from '../../components/Item';
-import {uuid} from 'uuidv4';
+import {v4 as uuidv4} from 'uuid';
 
 function Home(props) {
   const [title, setTitle] = useState('');
@@ -11,14 +11,13 @@ function Home(props) {
   handleAddBooks = () => {
     const sendTitle = {
       title: title,
-      id: uuid(),
+      id: uuidv4(),
     };
 
     props.addBook(sendTitle);
   };
 
   handleDeleteBook = id => {
-    console.log(id);
     props.deleteTitle(id);
   };
 

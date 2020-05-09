@@ -20,10 +20,9 @@ const titles = (state = initialState, action) => {
 
     case DELETE_TITLE: {
       const deleteTitle = state.titles.filter(title => {
-        title.id !== action.payload;
+        return title.id !== action.payload;
       });
 
-      console.log(deleteTitle);
       return {
         ...state,
         titles: deleteTitle,

@@ -20,12 +20,13 @@ const styles = StyleSheet.create({
   },
   containerView: {
     margin: 20,
+    width: 200,
     backgroundColor: 'navy',
-    height: 100,
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopWidth: 10,
-    borderTopColor: 'purple',
+    borderRadius: 10,
+    padding: 10,
   },
 });
 
