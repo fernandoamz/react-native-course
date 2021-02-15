@@ -1,56 +1,83 @@
-import React from 'react';
-import { View, FlatList } from 'react-native';
+import React, {useState} from 'react';
+import {View, FlatList, TextInput, StyleSheet, Button} from 'react-native';
+import {connect} from 'react-redux';
+import {addTitle, deleteTitle} from '../../actions/titles';
 import Item from '../../components/Item';
+import {v4 as uuidv4} from 'uuid';
 
-const DATA = [
-    {
-        id: 1,
-        title: 'this is my 1 title',
-    },
-    {
-        id: 2,
-        title: 'this is my 2 title',
-    },
-    {
-        id: 3,
-        title: 'this is my 3 title',
-    },
-    {
-        id: 4,
-        title: 'this is my 4 title',
-    },
-    {
-        id: 5,
-        title: 'this is my 5 title',
-    },
-    {
-        id: 6,
-        title: 'this is my 6 title',
-    },
-    {
-        id: 7,
-        title: 'this is my 7 title',
-    },
-    {
-        id: 8,
-        title: 'this is my 8 title',
-    },
-    {
-        id: 9,
-        title: 'this is my 9 title',
-    }
-]
+function Home(props) {
+  const [title, setTitle] = useState('');
 
-function Home() {
-    return (
-        <View>
-            <FlatList
-                data={DATA}
-                renderItem={({ item }) => <Item title={item.title}/>}
-                keyExtractor={item => item.id}
-            />
-        </View>
-    )
+  handleAddBooks = () => {
+    const sendTitle = {
+      title: title,
+      id: uuidv4(),
+    };
+
+    props.addBook(sendTitle);
+  };
+
+  handleDeleteBook = id => {
+    props.deleteTitle(id);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View>
+        <TextInput
+          style={styles.input}
+          onChangeText={text => setTitle(text)}
+          value={title}
+        />
+        <Button title="ADD" onPress={() => handleAddBooks()} />
+      </View>
+      <FlatList
+        data={props.titles.titles}
+        renderItem={({item}) => (
+          <Item
+            title={item.title}
+            onPressDelete={() => handleDeleteBook(item.id)}
+          />
+        )}
+        keyExtractor={item => item.id}
+      />
+    </View>
+  );
 }
 
-export default Home;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    marginTop: 10,
+    marginBottom: 10,
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    width: 200,
+  },
+});
+
+const mapStateToProps = state => {
+  return {
+    titles: state.titles,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addBook: title => {
+      dispatch(addTitle(title));
+    },
+    deleteTitle: id => {
+      dispatch(deleteTitle(id));
+    },
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Home);

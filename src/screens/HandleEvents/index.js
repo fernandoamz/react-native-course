@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react';
 import {
   TouchableOpacity,
   View,
@@ -7,91 +7,108 @@ import {
   Modal,
   Image,
   ImageBackground,
-  FlatList
+  FlatList,
 } from 'react-native';
-import { RNCamera } from 'react-native-camera';
-import { uuid } from 'uuidv4';
+import {RNCamera} from 'react-native-camera';
+import {uuid} from 'uuidv4';
 
 const PendingView = () => {
   return (
-    <View
-      styles={{
-        flex: 1,
-        backgroundColor: 'lightgreen',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text>Esperando ...</Text>    
+    <View styles={styles.pendingView}>
+      <Text>Esperando ...</Text>
     </View>
-  )
-}
+  );
+};
 
 function HandleEvents() {
   const [cameraRoll, setCameraRoll] = useState([]);
-  const [isModalCameraRollVisible, setIsModalCameraRollVisible] = useState(false);
+  const [isModalCameraRollVisible, setIsModalCameraRollVisible] = useState(
+    false,
+  );
 
-  takePicture = async (camera) => {
-    const options = { quality: 0.5, base64: true };
+  takePicture = async camera => {
+    const options = {quality: 0.5, base64: true};
     const data = await camera.takePictureAsync(options);
-    
+
     cameraRoll.push({
       id: uuid(),
       uri: data.uri,
-      selected: false
-    })
+      selected: false,
+    });
 
     setIsModalCameraRollVisible(!isModalCameraRollVisible);
-  }
+  };
 
-  handleSelectImage = (id) => {
-    const foundSelectedImage = cameraRoll.find(item => item.id === id)
-    foundSelectedImage.selected = true;
+  handleSelectImage = id => {
+    const updatedPhotosCameraRoll = cameraRoll.map(photo => {
+      if (photo.id === id) {
+        if (photo.selected === true) {
+          return {
+            ...photo,
+            selected: false,
+          };
+        } else {
+          return {
+            ...photo,
+            selected: true,
+          };
+        }
+      } else {
+        return {
+          ...photo,
+        };
+      }
+    });
 
-  }
+    setCameraRoll(updatedPhotosCameraRoll);
+  };
 
-  return(
+  handleDeletePhotos = () => {
+    const cameraDeletePhotos = cameraRoll.filter(
+      photo => photo.selected !== true,
+    );
+
+    setCameraRoll(cameraDeletePhotos);
+  };
+
+  return (
     <View style={styles.container}>
       <RNCamera
         style={styles.preview}
         type={RNCamera.Constants.Type.back}
         flashMode={RNCamera.Constants.FlashMode.on}
-        onGoogleVisionBarcodesDetected={({ barcodes }) => {
+        onGoogleVisionBarcodesDetected={({barcodes}) => {
           console.log(barcodes);
-        }}
-      >
-        {({ camera, status }) => {
-          if (status !== 'READY') return <PendingView />
-          return(
+        }}>
+        {({camera, status}) => {
+          if (status !== 'READY') {
+            return <PendingView />;
+          }
+          return (
             <View style={styles.subContainer}>
               <TouchableOpacity
-                activeOpacity= {0.6}
+                activeOpacity={0.6}
                 underlayColor={'#DDDDDD'}
-                onPress={() => takePicture(camera) }
-                style={styles.capture}
-              >
-                <Text style={ styles.text}>
-                  Tomar Fotografia
-                </Text>
+                onPress={() => takePicture(camera)}
+                style={styles.capture}>
+                <Text style={styles.text}>Tomar Fotografia</Text>
               </TouchableOpacity>
             </View>
-          )
+          );
         }}
       </RNCamera>
 
       <Modal
-        animationType='slide'
+        animationType="slide"
         visible={isModalCameraRollVisible}
-        transparent={false}
-      >
+        transparent={false}>
         <View
           style={{
             flex: 0,
             flexDirection: 'row',
             width: '100%',
             backgroundColor: 'silver',
-          }}
-        >
+          }}>
           <View>
             <View
               style={{
@@ -99,13 +116,13 @@ function HandleEvents() {
                 flexDirection: 'row',
                 alignContent: 'center',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <View>
                 <TouchableOpacity
-                  style={{ margin: 5 }}
-                  onPress={() => setIsModalCameraRollVisible(!isModalCameraRollVisible)}
-                >
+                  style={{margin: 5}}
+                  onPress={() =>
+                    setIsModalCameraRollVisible(!isModalCameraRollVisible)
+                  }>
                   <Image
                     source={require('../../assets/images/back.png')}
                     style={{
@@ -121,8 +138,9 @@ function HandleEvents() {
                     color: 'white',
                     fontSize: 16,
                     fontWeight: 'bold',
-                  }}
-                >Albumes</Text>
+                  }}>
+                  Albumes
+                </Text>
               </View>
             </View>
           </View>
@@ -132,16 +150,16 @@ function HandleEvents() {
               flexDirection: 'row',
               justifyContent: 'center',
               alignContent: 'center',
-              alignItems: 'center'
-            }}
-          >
+              alignItems: 'center',
+            }}>
             <Text
               style={{
                 color: 'white',
                 fontSize: 16,
                 fontWeight: 'bold',
-              }}
-            >Mi Galeria</Text>
+              }}>
+              Mi Galeria
+            </Text>
           </View>
           <View
             style={{
@@ -149,66 +167,64 @@ function HandleEvents() {
               flexDirection: 'row',
               justifyContent: 'center',
               alignContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <Text
-              style={{
-                color: 'white',
-                fontSize: 16,
-                fontWeight: 'bold',
-              }}
-            >Eliminar</Text>
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity onPress={() => handleDeletePhotos()}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}>
+                Eliminar
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View
           style={{
             flex: 1,
-            flexDirection: 'row'
-          }}
-        >
+            flexDirection: 'row',
+          }}>
           <FlatList
             data={cameraRoll}
-            renderItem={(image) => {
-              return(
+            renderItem={image => {
+              return (
                 <View
                   style={{
                     flex: 1,
                     flexDirection: 'column',
-                    margin: 5
-                  }}
-                > 
+                    margin: 5,
+                  }}>
                   <TouchableOpacity
-                    onPress={() => handleSelectImage(image.item.id)}
-                  >
+                    onPress={() => handleSelectImage(image.item.id)}>
                     <ImageBackground
-                      source={{ uri: image.item.uri }}
+                      source={{uri: image.item.uri}}
                       key={image.index}
                       style={{
                         width: 120,
                         height: 120,
-                      }}
-                    >
-                      {image.item.selected ?
+                      }}>
+                      {image.item.selected ? (
                         <Image
-                          source={require("../../assets/images/checkDelete.png")}
+                          source={require('../../assets/images/checkDelete.png')}
                           style={{
                             width: 30,
-                            height: 30
+                            height: 30,
                           }}
                         />
-                      : null}
+                      ) : null}
                     </ImageBackground>
                   </TouchableOpacity>
                 </View>
-              )
+              );
             }}
             numColumns={3}
           />
         </View>
       </Modal>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -224,9 +240,9 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 16,
   },
-  preview:{
+  preview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -239,6 +255,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignSelf: 'center',
     margin: 20,
+  },
+  pendingView: {
+    flex: 1,
+    backgroundColor: 'lightgreen',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

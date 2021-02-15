@@ -1,9 +1,17 @@
-/**
- * @format
- */
-
 import {AppRegistry} from 'react-native';
-import HandleEvents from './src/screens/HandleEvents';
+import React from 'react';
+import App from './App';
 import {name as appName} from './app.json';
+import {Provider} from 'react-redux';
 
-AppRegistry.registerComponent(appName, () => HandleEvents);
+import configureStore from './store';
+
+const store = configureStore();
+
+const MyApp = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+AppRegistry.registerComponent(appName, () => MyApp);

@@ -1,95 +1,268 @@
-import React, { useState } from 'react';
-import { 
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  Button,
-  Image
-} from 'react-native';
+import 'react-native-gesture-handler';
+import * as React from 'react';
+import {Button, View, Alert, useWindowDimensions} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-function App() {
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-  function logIn() {
-    console.log("Logica para iniciar sesion")
-    console.log(user)
-    console.log(password)
-  }
+import Login from './src/screens/Login';
+import StartSession from './src/screens/Login/StartSession';
+import Home from './src/screens/Home';
+import Counter from './src/screens/Counter';
+import MainMenu from './src/screens/MainMenu';
+import HandleEvents from './src/screens/HandleEvents';
+import TopicStyle from './src/screens/TopicStyle';
+import Users from './src/screens/Users';
+import UserList from './src/screens/Users/UserList';
+import CreateUser from './src/screens/Users/CreateUser';
+import SignOut from './src/components/SignOut';
 
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
+const TabMaterial = createMaterialBottomTabNavigator();
+const TopBar = createMaterialTopTabNavigator();
+
+function LogoHeader() {
+  return <MaterialCommunityIcons name="home" color="#ffff" size={30} />;
+}
+
+export default function App() {
   return (
-    <>
-      <View
-        style={styles.container}
-      >
-        <Image
-          source={require('./src/assets/images/logo.png')}
-          style={{
-            width: 150,
-            height: 150
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: 'navy',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitle: props => <LogoHeader {...props} />,
+          headerRight: () => <SignOut />,
+        }}>
+        <Stack.Screen
+          component={Login}
+          name="Login"
+          options={{
+            headerShown: false,
           }}
         />
-        <Text
-          style={styles.textStyles}
-          numberOfLines={2}
-          ellipsizeMode={"tail"}
-        >
-          Bienvenido a mi app
-        </Text>
-        <TextInput
-          style={styles.inputStyles}
-          onChangeText={(userText) => setUser(userText)}
-          placeholder="Usuario"
+        <Stack.Screen component={Home} name="Home" />
+        <Stack.Screen component={Counter} name="Counter" />
+        <Stack.Screen
+          component={MainMenu}
+          name="MainMenu"
+          options={{
+            headerLeft: null,
+          }}
         />
-        <TextInput
-          style={styles.inputStyles}
-          autoCompleteType={'password'}
-          secureTextEntry
-          placeholder="Password"
-          onChangeText={(passwordText) => setPassword(passwordText)}
+        <Stack.Screen component={HandleEvents} name="HandleEvents" />
+        <Stack.Screen component={TopicStyle} name="TopicStyle" />
+        <Stack.Screen component={Users} name="Users" />
+        <Stack.Screen component={UserList} name="UserList" />
+        <Stack.Screen component={CreateUser} name="CreateUser" />
+        <Stack.Screen
+          component={StartSession}
+          name="StartSession"
+          options={{
+            headerShown: false,
+          }}
         />
-        <View
-          style={styles.buttonStyles}
-        >
-          <Button
-            onPress={() => logIn()}
-            title="Iniciar sesion"
-          />
-        </View>
-      </View>
-    </>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
+}
 
-export default App;
+export function MyDrawer() {
+  const dimensions = useWindowDimensions();
+  const isLargeScreen = dimensions.width >= 768;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-    alignItems: 'center',
-    color: 'black',
-    width: '100%',
-    backgroundColor: '#1a237e',
-  },
-  inputStyles: {
-    borderColor: '#3949ab',
-    borderWidth: 4,
-    width: 300,
-    padding: 10,
-    margin: 10,
-    borderRadius: 10,
-    backgroundColor: 'white'
-  },
-  textStyles: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  buttonStyles: {
-    width: 300
-  }
-});
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator
+        drawerType={dimensions.width >= 768 ? 'permanent' : 'front'}
+        drawerStyle={{
+          width: '100%',
+          backgroundColor: '#c6cbef',
+        }}
+        drawerContentOptions={{
+          activeTintColor: '#e91e63',
+          itemStyle: {
+            marginVertical: 10,
+          },
+        }}>
+        <Drawer.Screen
+          name="Home"
+          component={Home}
+          options={{drawerLabel: 'My Home'}}
+        />
+        <Drawer.Screen
+          name="Counter"
+          component={Counter}
+          options={{drawerLabel: 'My Counter'}}
+        />
+        <Drawer.Screen
+          name="MainMenu"
+          component={MainMenu}
+          options={{drawerLabel: 'My MainMenu'}}
+        />
+        <Drawer.Screen name="HandleEvents" component={HandleEvents} />
+        <Drawer.Screen name="TopicStyle" component={TopicStyle} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export function MySimpleTab() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarLabel: 'My Home',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="home" color="#e91e63" size={20} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Counter"
+          component={Counter}
+          options={{
+            tabBarLabel: 'My Counter',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="coin" color="#e91e63" size={20} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="TopicStyle"
+          component={TopicStyle}
+          options={{
+            tabBarLabel: 'My Styles',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="bell" color="#e91e63" size={20} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export function MyMaterialTab() {
+  return (
+    <NavigationContainer>
+      <TabMaterial.Navigator>
+        <TabMaterial.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarLabel: 'My Home',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="home" color="#fff" size={20} />
+            ),
+          }}
+        />
+        <TabMaterial.Screen
+          name="Counter"
+          component={Counter}
+          options={{
+            tabBarLabel: 'My Counter',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="coin" color="#fff" size={20} />
+            ),
+          }}
+        />
+        <TabMaterial.Screen
+          name="TopicStyle"
+          component={TopicStyle}
+          options={{
+            tabBarLabel: 'My Styles',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="bell" color="#fff" size={20} />
+            ),
+          }}
+        />
+      </TabMaterial.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export function MySimpleTopBar() {
+  return (
+    <NavigationContainer>
+      <TopBar.Navigator
+        tabBarOptions={{
+          labelStyle: {fontSize: 10, color: 'white'},
+          // tabStyle: {width: 120},
+          style: {backgroundColor: 'steelblue'},
+          showIcon: true,
+        }}>
+        <TopBar.Screen
+          name="Users"
+          component={Users}
+          options={{
+            tabBarLabel: 'Users',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons
+                name="face-profile"
+                color="#fff"
+                size={20}
+              />
+            ),
+          }}
+        />
+        <TopBar.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="home" color="#fff" size={20} />
+            ),
+          }}
+        />
+        <TopBar.Screen
+          name="HandleEvents"
+          component={HandleEvents}
+          options={{
+            tabBarLabel: 'Camera',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="camera" color="#fff" size={20} />
+            ),
+          }}
+        />
+        <TopBar.Screen
+          name="Counter"
+          component={Counter}
+          options={{
+            tabBarLabel: 'Counter',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="coin" color="#fff" size={20} />
+            ),
+          }}
+        />
+        <TopBar.Screen
+          name="TopicStyle"
+          component={TopicStyle}
+          options={{
+            tabBarLabel: 'My Styles',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="bell" color="#fff" size={20} />
+            ),
+          }}
+        />
+      </TopBar.Navigator>
+    </NavigationContainer>
+  );
+}
